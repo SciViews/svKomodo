@@ -1,75 +1,108 @@
-svTaskCallbackManager <- function (handlers = list(), registered = FALSE,
-verbose = FALSE) 
-{
-    suspended <- FALSE
-    .verbose <- verbose
-    
-    add <- function(f, data = NULL, name = NULL, register = TRUE) {
-        if (is.null(name)) 
-            name <- as.character(length(handlers) + 1L)
-        handlers[[name]] <<- list(f = f)
-        if (!missing(data)) 
-            handlers[[name]][["data"]] <<- data
-        if (!registered && register) {
-            register()
-        }
-        name
+#' Create task callbacks that are evaluated both from R and socket/http server
+#'
+#' `svTaskCallbackManager()` is a copy of `taskCallbackManager()` in R base
+#' package, as of version 2.9.2 of R. Two important differences: (1) the top
+#' task created is named `SV-taskCallbackManager` instead of
+#' `R-taskCallbackManager`, and its tasks are executed after each top-level task
+#' in R console, or after execution of non-hidden R code from the socket or http
+#' server (take care: only once per set of code, no matter the number of
+#' top-level task in the R code send by the client in the second case). All
+#' taskCallbacks defined by `addTaskCallback()` or `taskCallbackManager$add()`
+#' from R base package are not executed when code is invoked from the R socket
+#' or http server!
+#'
+#' @param handlers this can be a list of callbacks in which each element is a
+#' list with an element named `f` which is a callback function, and an optional
+#' element named `data` which is the 5-th argument to be supplied to the
+#' callback when it is invoked. Typically this argument is not specified, and
+#' one uses add to register callbacks after the manager is created.
+#' @param registered a logical value indicating whether the `evaluate`
+#' function has already been registered with the internal task callback
+#' mechanism. This is usually \code{FALSE} and the first time a callback is
+#' added via the add function, the evaluate function is automatically
+#' registered. One can control when the function is registered by specifying
+#' `TRUE` for this argument and calling `addTaskCallback()` manually.
+#' @param verbose a logical value, which if `TRUE`, causes information to be
+#' printed to the console about certain activities this dispatch manager
+#' performs. This is useful for debugging callbacks and the handler itself.
+#'
+#' @return See `?taskCallbackManager` for both the returned object and how to use it.
+#' @author Slightly modified from the original R core team's function by Ph.
+#' Grosjean <phgrosjean@sciviews.org>
+#' @seealso [taskCallbackManager()]
+#' @keywords IO
+#' @concept task callback
+#' @export
+svTaskCallbackManager <- function(handlers = list(), registered = FALSE,
+verbose = FALSE) {
+  suspended <- FALSE
+  .verbose <- verbose
+
+  add <- function(f, data = NULL, name = NULL, register = TRUE) {
+    if (is.null(name))
+      name <- as.character(length(handlers) + 1L)
+    handlers[[name]] <<- list(f = f)
+    if (!missing(data))
+      handlers[[name]][["data"]] <<- data
+    if (!registered && register) {
+      register()
     }
-    
-    remove <- function(which) {
-        if (is.character(which)) {
-            tmp <- (1L:length(handlers))[!is.na(match(which, 
-                names(handlers)))]
-            if (length(tmp)) 
-                stop(gettextf("no such element '%s'", which), 
-                  domain = NA)
-            which <- tmp
-        }
-        else which <- as.integer(which)
-        handlers <<- handlers[-which]
-        return(TRUE)
+    name
+  }
+
+  remove <- function(which) {
+    if (is.character(which)) {
+      tmp <- (1L:length(handlers))[!is.na(match(which, names(handlers)))]
+      if (length(tmp))
+        stop(gettextf("no such element '%s'", which), domain = NA)
+      which <- tmp
+    } else {
+      which <- as.integer(which)
     }
-    
-    evaluate <- function(expr, value, ok, visible) {
-        if (suspended) 
-            return(TRUE)
-        discard <- character(0L)
-        for (i in names(handlers)) {
-            h <- handlers[[i]]
-            if (length(h) > 1L) {
-                val <- h[["f"]](expr, value, ok, visible, i[["data"]])
-            }
-            else {
-                val <- h[["f"]](expr, value, ok, visible)
-            }
-            if (!val) {
-                discard <- c(discard, i)
-            }
-        }
-        if (length(discard)) {
-            if (.verbose) 
-                cat(gettext("Removing"), paste(discard, collapse = ", "), 
-                  "\n")
-            idx <- is.na(match(names(handlers), discard))
-            if (length(idx)) 
-                handlers <<- handlers[idx]
-            else handlers <<- list()
-        }
-        return(TRUE)
+    handlers <<- handlers[-which]
+    return(TRUE)
+  }
+
+  evaluate <- function(expr, value, ok, visible) {
+    if (suspended)
+      return(TRUE)
+    discard <- character(0L)
+    for (i in names(handlers)) {
+      h <- handlers[[i]]
+      if (length(h) > 1L) {
+        val <- h[["f"]](expr, value, ok, visible, i[["data"]])
+      } else {
+        val <- h[["f"]](expr, value, ok, visible)
+      }
+      if (!val) {
+        discard <- c(discard, i)
+      }
     }
-    
-    suspend <- function(status = TRUE) {
-        suspended <<- status
+    if (length(discard)) {
+      if (.verbose)
+        cat(gettext("Removing"), paste(discard, collapse = ", "), "\n")
+      idx <- is.na(match(names(handlers), discard))
+      if (length(idx)) {
+        handlers <<- handlers[idx]
+      } else {
+        handlers <<- list()
+      }
     }
-    
-    register <- function(name = "SV-taskCallbackManager", verbose = .verbose) {
-        if (verbose) 
-            cat(gettext("Registering evaluate as low-level callback\n"))
-        id <- addTaskCallback(evaluate, name = name)
-        registered <<- TRUE
-        id
-    }
-    
-    list(add = add, evaluate = evaluate, remove = remove, register = register, 
-        suspend = suspend, callbacks = function() handlers)
+    return(TRUE)
+  }
+
+  suspend <- function(status = TRUE) {
+    suspended <<- status
+  }
+
+  register <- function(name = "SV-taskCallbackManager", verbose = .verbose) {
+    if (verbose)
+      cat(gettext("Registering evaluate as low-level callback\n"))
+    id <- addTaskCallback(evaluate, name = name)
+    registered <<- TRUE
+    id
+  }
+
+  list(add = add, evaluate = evaluate, remove = remove, register = register,
+    suspend = suspend, callbacks = function() handlers)
 }
