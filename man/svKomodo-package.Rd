@@ -23,10 +23,10 @@ Markdown, and more.
 
 The development of this extension for Komodo IDE was stopped in 2016 because
 it was too similar to RStudio that emerged at that time as one of the
-preferred editor/IDE for R. The SciViews ISE using Komodo never was enough
-advertized, nor documented to gain a significant useR base.
+preferred editor/IDE for R. The SciViews IDE using Komodo never was enough
+advertised, nor documented to gain a significant useR base.
 
-Nervertheless, the SciViews-K Komodo addin and the {svKomodo} R package
+Nevertheless, the SciViews-K Komodo addin and the {svKomodo} R package
 implemented features that may be interesting in a different context. The
 interaction of R and Komodo and the remote R Console in Komodo use
 communication protocols developed in the {svSocket} and {svHttp} R packages.
@@ -52,5 +52,5 @@ Useful links:
 \strong{Maintainer}: Philippe Grosjean \email{phgrosjean@sciviews.org} (\href{https://orcid.org/0000-0002-2694-9471}{ORCID})
 
 }
-\concept{interprocess commnunication Komodo}
+\concept{interprocess communication Komodo}
 \keyword{IO}

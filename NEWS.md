@@ -6,6 +6,8 @@
 
 -   Man pages are rewritten in Roxygen2.
 
+-   Pkgdown web site added, spelling, and R CMD check GitHub actions.
+
 # svKomodo 0.9-63
 
 -   Starting from R revision \>= 67550, the HTML help port is now retrieved using `tools::startDynamicHelp(NA)`.

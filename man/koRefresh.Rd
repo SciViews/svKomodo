@@ -25,5 +25,5 @@ called directly by the end-user.
 \seealso{
 \code{\link[=koCmd]{koCmd()}}
 }
-\concept{interprocess commnunication Komodo}
+\concept{interprocess communication Komodo}
 \keyword{misc}

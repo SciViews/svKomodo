@@ -47,7 +47,7 @@ Komodo. if \code{type = "output"}, the string in \code{cmd} is considered to be 
 output and will be displayed in the Komodo local R console (no evaluation).}
 
 \item{pad}{a string naming the JavaScript function to run in Komodo, with the
-constructed Rjson object as argument. If \code{NULL} (by default), the Rjson
+constructed RJson object as argument. If \code{NULL} (by default), the RJson
 object is evaluated directly without padding.}
 
 \item{...}{further arguments to pass to \code{toRjson()}.}
@@ -77,7 +77,7 @@ distributed as well and Komodo Edit was deprecated. However, the project does
 not appear to be actively maintained any more and it may not work on more
 recent MacOS or Windows versions.
 
-\code{koCmd()} can only talk to Komdo if the SciViews-K socket server is
+\code{koCmd()} can only talk to Komodo if the SciViews-K socket server is
 installed. This server is contained in the SciViews-K extension that you can
 download from https://github.com/SciViews/sciviewsk. See Komodo documentation
 to know how to install this extension (drag and drop of the extension on the
@@ -91,8 +91,48 @@ relatively easy to eliminate, but at your own risks!
 Data are returned from Komodo to R by using the JavaScript function
 \code{sv.socket.serverWrite()}, see the examples bellow.
 }
-\seealso{
-\code{\link[svSocket:startSocketServer]{svSocket::startSocketServer()}}, \code{\link[svSocket:processSocket]{svSocket::processSocket()}}
+\examples{
+\dontrun{
+# Make sure you have started Komodo Edit or IDE with the SciViews-K extension
+# installed on the same machine, and the socket server started and then...
+
+# Send JavaScript commands to Komodo
+# Alert box in Komodo, and then reply to R
+koCmd(c('alert("Hello from R!");',
+  'sv.socket.serverWrite("Hello from OpenKomodo (" + ko.interpolate.currentFilePath() + ")");'))
+
+# Open a web page wih Komodo configuration
+koCmd("ko.open.URI('about:config','browser');")
+
+# Get info from Komodo
+koCmd("sv.socket.serverWrite(ko.logging.getStack());")
+
+# Passing a large amount of data to Komodo, and then, back to R
+koCmd(paste0('sv.socket.serverWrite("', rep(paste(iris, collapse = "\\\\\\\\n"), 10), '");'))
+
+# It is easier to use 'data =' instead of paste() for constructing the JS command
+koCmd('alert("<<<data>>>");', data = search())
+
+# Using a named list for data to replace in the cmd
+koCmd('alert("This is R version <<<major>>>.<<<minor>>>");', R.version)
+
+# Sending incorrect JavaScript instruction
+koCmd('nonexistingJSfunction();')
+# Should return something like:
+# "ReferenceError: nonexistingJSfunction is not defined"
+
+# Sending RJsonP (RJson with padding) instruction to Komodo
+koCmd("Hello with RJsonP!", type = "rjsonp", pad = "alert")
+
+# This is more useful to pass complex R objects to Komodo
+koCmd(head(iris), type = "rjsonp", pad = "sv.socket.serverWrite")
+
+# Send simple text (no evaluation) to the Komodo R console
+koCmd("Hello again from R!", type = "output")
 }
-\concept{interprocess commnunication Komodo}
+}
+\seealso{
+\code{\link[svSocket:start_socket_server]{svSocket::startSocketServer()}}, \code{\link[svSocket:process_socket_server]{svSocket::processSocket()}}
+}
+\concept{interprocess communication Komodo}
 \keyword{IO}

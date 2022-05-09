@@ -33,6 +33,23 @@
 #' @keywords IO
 #' @concept task callback
 #' @export
+#' @examples
+#' # create a task callback manager
+#' cbman <- svTaskCallbackManager()
+#' # Add a function to activate after each code evaluation in R
+#' cbman$add(function(expr, value, ok, visible) {
+#'   cat("Hi from the callback manager!\n")
+#'   return(TRUE)
+#'   }, name = "exampleHandler")
+#' # Just issue a command and see the callback function activated
+#' 1 + 1
+#' # List defined callbacks
+#' cbman$callbacks()
+#' # Remove the callback we just defined
+#' cbman$remove("exampleHandler")
+#' 1 + 1
+#' # Remove the task callback manager (base R function)
+#' removeTaskCallback("SV-taskCallbackManager")
 svTaskCallbackManager <- function(handlers = list(), registered = FALSE,
 verbose = FALSE) {
   suspended <- FALSE
@@ -51,13 +68,19 @@ verbose = FALSE) {
   }
 
   remove <- function(which) {
+    if (length(which) != 1L)
+      stop("'which' must be of length 1")
     if (is.character(which)) {
-      tmp <- (1L:length(handlers))[!is.na(match(which, names(handlers)))]
-      if (length(tmp))
+      tmp <- match(which, names(handlers))
+      if (is.na(tmp))
         stop(gettextf("no such element '%s'", which), domain = NA)
       which <- tmp
-    } else {
+    } else if (is.numeric(which)) {
       which <- as.integer(which)
+      if (which <= 0 || which > length(handlers))
+        stop("invalid 'which' argument")
+    } else {
+      stop("'which' must be character or numeric")
     }
     handlers <<- handlers[-which]
     return(TRUE)
@@ -66,11 +89,11 @@ verbose = FALSE) {
   evaluate <- function(expr, value, ok, visible) {
     if (suspended)
       return(TRUE)
-    discard <- character(0L)
+    discard <- character()
     for (i in names(handlers)) {
       h <- handlers[[i]]
       if (length(h) > 1L) {
-        val <- h[["f"]](expr, value, ok, visible, i[["data"]])
+        val <- h[["f"]](expr, value, ok, visible, h[["data"]])
       } else {
         val <- h[["f"]](expr, value, ok, visible)
       }
@@ -80,7 +103,7 @@ verbose = FALSE) {
     }
     if (length(discard)) {
       if (.verbose)
-        cat(gettext("Removing"), paste(discard, collapse = ", "), "\n")
+        cat(gettextf("Removing %s", paste(discard, collapse = ", ")), "\n")
       idx <- is.na(match(names(handlers), discard))
       if (length(idx)) {
         handlers <<- handlers[idx]
@@ -97,7 +120,7 @@ verbose = FALSE) {
 
   register <- function(name = "SV-taskCallbackManager", verbose = .verbose) {
     if (verbose)
-      cat(gettext("Registering evaluate as low-level callback\n"))
+      cat(gettext("Registering 'evaluate' as low-level callback\n"))
     id <- addTaskCallback(evaluate, name = name)
     registered <<- TRUE
     id

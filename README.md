@@ -2,13 +2,14 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/SciViews/svKomodo/workflows/R-CMD-check/badge.svg)](https://github.com/SciViews/svKomodo/actions) [![CRAN status](https://www.r-pkg.org/badges/version/svKomodo)](https://cran.r-project.org/package=svKomodo) [![License](https://img.shields.io/badge/license-GPL-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html) [![Lifecycle: superseded](https://img.shields.io/badge/lifecycle-superseded.svg)](https://www.tidyverse.org/lifecycle/#superseded)
+[![R-CMD-check](https://github.com/SciViews/svKomodo/workflows/R-CMD-check/badge.svg)](https://github.com/SciViews/svKomodo/actions) [![Win Build Status](https://ci.appveyor.com/api/projects/status/github/SciViews/svKomodo?branch=master&svg=true)](https://ci.appveyor.com/project/phgrosjean/svKomodo) [![Coverage Status](https://img.shields.io/codecov/c/github/SciViews/svKomodo/master.svg)](https://codecov.io/github/SciViews/svKomodo?branch=master) [![CRAN status](https://www.r-pkg.org/badges/version/svKomodo)](https://cran.r-project.org/package=svKomodo) [![License](https://img.shields.io/badge/license-GPL-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html) [![Lifecycle: superseded](https://img.shields.io/badge/lifecycle-superseded.svg)](https://www.tidyverse.org/lifecycle/#superseded)
 
+[![R-CMD-check](https://github.com/SciViews/svKomodo/workflows/R-CMD-check/badge.svg)](https://github.com/SciViews/svKomodo/actions)
 <!-- badges: end -->
 
 R-side code to implement an R editor and IDE in Komodo IDE (<https://www.activestate.com/products/komodo-ide/>) with the SciViews-K extension.
 
-**Note that this package is maintained minimally in order to keep code that may be useful in another context. However, RStudio and VScode with R extensions are the R editors/IDEs that you should use today. Komodo + SciViews-K/svKomodo ambitioned to develop a similar R IDE back in the 2000's/2010's, but its development was stopped in 2016 when RStudio gained its popularity.**
+**Note that this package is maintained minimally in order to keep code that may be useful in another context. However, RStudio and VScode with R extensions are the R editors/IDEs that you should use today. Komodo + SciViews-K/svKomodo aimed to develop a similar R IDE back in the 2000's/2010's, but its development was stopped in 2016 when RStudio gained its popularity.**
 
 ## Installation
 

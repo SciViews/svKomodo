@@ -29,7 +29,7 @@
 #'
 #' @seealso [koCmd()]
 #' @keywords misc
-#' @concept interprocess commnunication Komodo
+#' @concept interprocess communication Komodo
 #' @export
 koInstall <- function() {
 # PhG: this is a mechanisms we don't implement at the end!
@@ -90,7 +90,7 @@ koUninstall <- function() {
   #	rmTemp(".koCmd")
 
   # Unregister our own TaskCallback
-  h <- getTemp(".svTaskCallbackManager", default = NULL, mode = "list")
+  h <- get_temp(".svTaskCallbackManager", default = NULL, mode = "list")
   if (!is.null(h))
     try(h$remove("koAutoRefresh"), silent = TRUE)
 }

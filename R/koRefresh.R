@@ -22,7 +22,7 @@
 #' @return Both functions return `TRUE` on success.
 #' @seealso [koCmd()]
 #' @keywords misc
-#' @concept interprocess commnunication Komodo
+#' @concept interprocess communication Komodo
 #' @export
 koRefresh <- function(force = FALSE) {
   safekoCmd <- function(cmd, data = NULL, ...) {

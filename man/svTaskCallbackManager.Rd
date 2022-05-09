@@ -39,6 +39,24 @@ taskCallbacks defined by \code{addTaskCallback()} or \code{taskCallbackManager$a
 from R base package are not executed when code is invoked from the R socket
 or http server!
 }
+\examples{
+# create a task callback manager
+cbman <- svTaskCallbackManager()
+# Add a function to activate after each code evaluation in R
+cbman$add(function(expr, value, ok, visible) {
+  cat("Hi from the callback manager!\n")
+  return(TRUE)
+  }, name = "exampleHandler")
+# Just issue a command and see the callback function activated
+1 + 1
+# List defined callbacks
+cbman$callbacks()
+# Remove the callback we just defined
+cbman$remove("exampleHandler")
+1 + 1
+# Remove the task callback manager (base R function)
+removeTaskCallback("SV-taskCallbackManager")
+}
 \seealso{
 \code{\link[=taskCallbackManager]{taskCallbackManager()}}
 }

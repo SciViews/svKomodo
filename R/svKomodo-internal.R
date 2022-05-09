@@ -124,21 +124,21 @@
   .loadSvOptions()
 
   # Check that usually inactivated rc.settings are set
-  assignTemp(".old.rc.settings", rc.settings())
+  assign_temp(".old.rc.settings", rc.settings())
   rc.settings(ipck = TRUE)
 
   # Create our SciViews task callback manager
   # Should eliminate this???
   ## PhG: inactivated for now, because it makes problems in R!!!
-  #assignTemp(".svTaskCallbackManager", svTaskCallbackManager())
+  #assign_temp(".svTaskCallbackManager", svTaskCallbackManager())
   koInstall()
 
   # Temporary change of a few R options that make problem with SciViews
   # Do not use fancy quotes
-  assignTemp(".useFancyQuotes", getOption("useFancyQuotes"))
+  assign_temp(".useFancyQuotes", getOption("useFancyQuotes"))
   options(useFancyQuotes = FALSE)
   # Limit output to 999 items
-  assignTemp(".max.print", getOption("max.print"))
+  assign_temp(".max.print", getOption("max.print"))
   options(max.print = 999)
 
 	  # If svStart function exists in.GlobalEnv, delegate the rest to it!
@@ -150,13 +150,13 @@
   type <- getOption("ko.type")
   req <- require
   if (type == "http") {
-    req("svHttp", character.only = TRUE, lib.loc = lib)
+    req("svHttp", character.only = TRUE)
     if (interactive())
       try(svHttp::start_http_server())
   } else {
-    req("svSocket", character.only = TRUE, lib.loc = lib)
+    req("svSocket", character.only = TRUE)
     if (interactive())
-      try(svSocket::startSocketServer())
+      try(svSocket::start_socket_server())
   }
 
   # This comes from svStart... and should really be placed here indeed!
@@ -300,7 +300,7 @@
 
   # I need to get the help file URL, but help() does not provide it any
   # more! This is a temporary workaround for this problem
-  assignTemp("getHelpURL", function(x, ...) {
+  assign_temp("getHelpURL", function(x, ...) {
     file <- as.character(x)
     if (length(file) == 0)
       return("")
@@ -349,7 +349,7 @@
     # Create a .Last.sys function that clears some variables in .GlobalEnv
     # and then, switch to R.initdir before closing R. The function is
     # stored in SciViews:TempEnv
-    assignTemp(".Last.sys", function() {
+    assign_temp(".Last.sys", function() {
       # Eliminate some known hidden variables from .GlobalEnv to prevent
       # saving them in the .RData file
       if (exists(".required", envir = .GlobalEnv, inherits = FALSE))
@@ -404,7 +404,7 @@
     # Do we reactivate Komodo now?
     #	koact <- getOption("ko.activate")
     #	debugMsg("Reactivate Komodo:", koact)
-  #	if (getTemp(".SciViewsReady", FALSE) && koact) {
+  #	if (get_temp(".SciViewsReady", FALSE) && koact) {
   #		if ((.Platform$pkgType == "mac.binary")) {
   #			system("osascript -e 'tell application \"Komodo\" to activate'",
   #				wait = FALSE)
@@ -490,10 +490,10 @@
   koUninstall()
   # Remove the SciViews task callback manager
   try(removeTaskCallback("SV-taskCallbackManager"), silent = TRUE)
-  try(rmTemp(".svTaskCallbackManager"), silent = TRUE)
+  try(rm_temp(".svTaskCallbackManager"), silent = TRUE)
 
   # Restore rc.settings
-  settings <- getTemp(".old.rc.settings", rc.settings())
+  settings <- get_temp(".old.rc.settings", rc.settings())
   do.call("rc.settings", as.list(settings))
-  rmTemp(".old.rc.settings")
+  rm_temp(".old.rc.settings")
 }
