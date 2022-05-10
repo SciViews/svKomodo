@@ -7,8 +7,7 @@
 \title{svKomodo: 'SciViews' - Functions to Interface with Komodo IDE}
 \description{
 R-side code to implement an R editor and IDE in Komodo IDE
-  (https://www.activestate.com/products/komodo-ide/) with the SciViews-K
-  extension.
+  with the SciViews-K extension.
 }
 \details{
 Before RStudio or R addins for vscode were developed and popularized, this

@@ -4,8 +4,7 @@ Version: 1.0.0
 Date: 2022-05-07
 Title: 'SciViews' - Functions to Interface with Komodo IDE
 Description: R-side code to implement an R editor and IDE in Komodo IDE
-  (https://www.activestate.com/products/komodo-ide/) with the SciViews-K
-  extension.
+  with the SciViews-K extension.
 Authors@R: c(person("Philippe", "Grosjean", role = c("aut", "cre"),
   email = "phgrosjean@sciviews.org",
   comment = c(ORCID = "0000-0002-2694-9471")))
@@ -19,6 +18,5 @@ URL: https://github.com/SciViews/svKomodo, https://www.sciviews.org/svKomodo/
 BugReports: https://github.com/SciViews/svKomodo/issues
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-VignetteBuilder: knitr
 Encoding: UTF-8
 Language: en-US
