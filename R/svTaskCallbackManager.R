@@ -1,7 +1,7 @@
 #' Create task callbacks that are evaluated both from R and socket/http server
 #'
 #' `svTaskCallbackManager()` is a copy of `taskCallbackManager()` in R base
-#' package, as of version 2.9.2 of R. Two important differences: (1) the top
+#' package, as of version 4.0.5 of R. Two important differences: (1) the top
 #' task created is named `SV-taskCallbackManager` instead of
 #' `R-taskCallbackManager`, and its tasks are executed after each top-level task
 #' in R console, or after execution of non-hidden R code from the socket or http

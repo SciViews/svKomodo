@@ -29,7 +29,7 @@ See \code{?taskCallbackManager} for both the returned object and how to use it.
 }
 \description{
 \code{svTaskCallbackManager()} is a copy of \code{taskCallbackManager()} in R base
-package, as of version 2.9.2 of R. Two important differences: (1) the top
+package, as of version 4.0.5 of R. Two important differences: (1) the top
 task created is named \code{SV-taskCallbackManager} instead of
 \code{R-taskCallbackManager}, and its tasks are executed after each top-level task
 in R console, or after execution of non-hidden R code from the socket or http
